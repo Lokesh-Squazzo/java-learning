@@ -1,0 +1,36 @@
+# IntelliJ
+.idea/
+*.iml
+.test/
+# Smart Tomcat
+.smarttomcat/
+
+# Build Output
+target/
+out/
+build/
+
+# Java
+*.class
+
+# Logs
+*.log
+
+# OS Files
+Thumbs.db
+.DS_Store
+
+# VS Code
+.vscode/
+
+# Eclipse
+.project
+.classpath
+.settings/
+
+# NetBeans
+nbproject/
+
+# Temporary Files
+*.tmp
+*.swp
