@@ -9,7 +9,7 @@ public class Student {
     private long id;
     private String name;
     private String email;
-    private int prn;
+    private long prn;
     private long phone;
 
     public long getId() {
@@ -36,7 +36,7 @@ public class Student {
         this.email = email;
     }
 
-    public int getPrn() {
+    public long getPrn() {
         return prn;
     }
 
