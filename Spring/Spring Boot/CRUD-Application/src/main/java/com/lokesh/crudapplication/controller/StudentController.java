@@ -2,6 +2,8 @@ package com.lokesh.crudapplication.controller;
 
 import com.lokesh.crudapplication.model.Student;
 import com.lokesh.crudapplication.service.StudentService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,10 +28,20 @@ public class StudentController {
     }
 
     @PostMapping("/create")
-    public Student createStudent(@RequestBody Student student){
+    public ResponseEntity<Student> createStudent(@RequestBody Student student){
         studentService.create(student);
         System.out.println(student.getName());
-        return student;
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(student);
+        /*
+        let's return http response here by default it is returning 200 code.
+        We use ResponseEntity class, which having different methods.
+        Here we can use direct .ok() method which return 200 code, or
+        .created() which return 201 but needs URI, but currently I don't
+        know about this. So i have used here .status() with enum of HttpStatus
+        which consist many status code like OK, CREATED, etc...
+         */
     }
 
 }
