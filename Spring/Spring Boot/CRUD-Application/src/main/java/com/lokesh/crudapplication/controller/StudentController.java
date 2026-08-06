@@ -17,8 +17,10 @@ public class StudentController {
     1. POST - /create
     2. GET - /get/{id}
     3. GET - /getAll
-    4. PUT -/update
+    4. PUT -/update/{id}
     5. DELETE - /delete/{id}
+    6. PATCH - /soft-delete/{id}
+    7. PATCH -/recover/{email}
      */
     StudentService studentService;
 
@@ -44,19 +46,58 @@ public class StudentController {
     @GetMapping("/get/{id}")
     public ResponseEntity<Student> getOne(@PathVariable Long id){
         Student student = studentService.getAStd(id);
-        return ResponseEntity.status((student==null)? HttpStatus.NOT_FOUND: HttpStatus.OK).body(student);
+        return (student==null)?
+                ResponseEntity.status(HttpStatus.NOT_FOUND).build() :
+                ResponseEntity.ok(student);
     }
 
     @GetMapping("/getAll")
     public ResponseEntity<List<Student>> getAllStudent(){
         List<Student> studentList =studentService.getAllStudent();
-        return ResponseEntity.status(HttpStatus.OK).body(studentList);
+        return (studentList.isEmpty() )?
+                ResponseEntity.status(HttpStatus.NOT_FOUND).build() :
+                ResponseEntity.ok(studentList);
     }
 
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Student> updateStd(@PathVariable Long id,
+                                             @RequestBody Student studentReqBody)
+    {
+        Student student = studentService.updateStd(id, studentReqBody);
+        if(student==null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok(student);
+    }
+
+
     @DeleteMapping("delete/{id}")
-    public ResponseEntity<?> deleteById(@PathVariable Long id){
-        studentService.deleteById(id);
-        return ResponseEntity.ok("User Deleted");
+    public ResponseEntity<String> deleteById(@PathVariable Long id){
+
+        boolean isDeleted = studentService.deleteById(id);
+        if(!isDeleted){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No Student found with this "+id+" id");
+        }
+        return ResponseEntity.ok("Student Deleted");
+    }
+
+    @PatchMapping("/soft-delete/{id}")
+    public ResponseEntity<String> softDelete(@PathVariable Long id){
+        boolean isDeleted = studentService.softDelete(id);
+        if(!isDeleted){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No Student found with this "+id+" id");
+        }
+        return ResponseEntity.ok("Student Deleted");
+    }
+
+    @PatchMapping("/recover/{email}")
+    public ResponseEntity<String> recoverStudent(@PathVariable String email){
+        boolean isRecovered = studentService.recoverStudent(email);
+        if(!isRecovered){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Student is permanently deleted, can't be recover");
+        }
+        return ResponseEntity.ok("Student recovered successfully");
     }
 
 }
